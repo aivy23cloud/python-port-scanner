@@ -58,10 +58,10 @@ This project was built to strengthen my understanding of:
 
 ## Future Improvements
 
-- Implement banner grabbing
-- Quicker execution time
+- Implement banner grabbing and service detection
 - Restructuring of files to improve readability and maintenance
-- Basic user interface for better usability
+- Improve command line arguments with argparse
+- Output logs of scan
 
 
 ## Disclaimer
