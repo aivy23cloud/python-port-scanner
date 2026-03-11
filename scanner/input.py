@@ -17,7 +17,7 @@ def parse_args():
     )
     
     parser.add_argument(
-        "-p", "--pr",
+        "-p", "--ports",
         help="Port range to scan in the form low-high"
     )
     
@@ -27,7 +27,7 @@ def parse_args():
     )
     
     parser.add_argument(
-        "-d", "--def",
+        "-d", "--use-defaults",
         help="Use default port ranges to bypass prompting",
         action="store_true"
     )
@@ -52,25 +52,24 @@ def get_ip(cli_ip=None):
     
     return ip
 
-def get_port_range(cli_pr=None, use_defaults=False):
+def get_port_range(cli_ports=None, use_defaults=False):
     """
     Get the target port range from either CLI or by prompting the user.
     """
-    
-    if (use_defaults):
+    if (use_defaults and cli_ports is None):
         return range(DEFAULT_PORT_RANGE_LOW, DEFAULT_PORT_RANGE_HIGH+1)
     
-    if (cli_pr):
+    if (cli_ports):
         try:
-            low_str, high_str = cli_pr.split("-")
+            low_str, high_str = cli_ports.split("-")
             low, high = int(low_str), int(high_str)
         except Exception:
-            print(f"Invalid port range or format: {cli_pr}")
+            print(f"Invalid port range or format: {cli_ports}")
             return get_port_range(None, False)
     else:
         try:
             low = int(input(f"Enter lowest port to scan (Default: {DEFAULT_PORT_RANGE_LOW}): ") or DEFAULT_PORT_RANGE_LOW)
-            high = int(input(f"Enter lowest port to scan (Default: {DEFAULT_PORT_RANGE_HIGH}): ") or DEFAULT_PORT_RANGE_HIGH)
+            high = int(input(f"Enter highest port to scan (Default: {DEFAULT_PORT_RANGE_HIGH}): ") or DEFAULT_PORT_RANGE_HIGH)
         except ValueError:
             print("Invalid port number entered")
             return get_port_range(None, False)
@@ -86,14 +85,16 @@ def get_output_filename(cli_out=None, use_defaults=False):
     Get the output file name from either CLI or by prompting the user.
     """
     
-    if (use_defaults):
+    if (use_defaults and cli_out is None):
         return DEFAULT_OUTPUT_FILENAME
     
     out = cli_out
-    while (not out):
-        out = input("Enter output filename (Default: {DEFAULT_OUTPUT_FILENAME}): ").strip()
     
-    # Some form of logic to validate file name here possibly
+    if (not out):
+        out = input(f"Enter output filename (Default: '{DEFAULT_OUTPUT_FILENAME}'): ").strip() or DEFAULT_OUTPUT_FILENAME
+    
+    if not out.endswith(".txt"):
+        out += ".txt"
     
     return out
 
@@ -101,10 +102,9 @@ def get_scan_config():
     """
     Main function to fetch necessary arguments for scan. Returns (ip, port_range)
     """
-    
     args = parse_args()
     ip = get_ip(args.get("ip"))
-    port_range = get_port_range(args.get("pr"), args.get("def"))
-    out = get_output_filename(args.get("out"), args.get("def"))
+    port_range = get_port_range(args.get("ports"), args.get("use_defaults"))
+    out = get_output_filename(args.get("out"), args.get("use_defaults"))
     
     return ip, port_range, out
