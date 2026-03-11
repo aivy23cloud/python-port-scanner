@@ -60,6 +60,8 @@ This project was built to strengthen my understanding of:
 
 - Implement banner grabbing
 - Quicker execution time
+- Restructuring of files to improve readability and maintenance
+- Basic user interface for better usability
 
 
 ## Disclaimer
