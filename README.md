@@ -38,7 +38,7 @@ Navigate to the project folder: <br>
 
 #### Execute the `main.py` file as so: <br>
 `python main.py TARGET_IP PORT_RANGE_LOW PORT_RANGE_HIGH`
-
+Failure to provide specific arguments will result in additional prompting
 <br>
 
 ### Executing without command line arguments
